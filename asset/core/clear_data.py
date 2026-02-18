@@ -19,5 +19,17 @@ def CleanData(text):
     print(cleaned)
     print('x' * 100)"""
     #cleaned = ast.literal_eval(cleaned)
-    cleaned = json.loads(cleaned)
+    print(cleaned)
+    #cleaned = json.loads(cleaned)
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        pass
+
+    # 3️⃣ Fallback for GPT Python-style dict output
+    try:
+        return ast.literal_eval(cleaned)
+    except Exception as e:
+        print("Parsing failed:", e)
+        raise ValueError("Model response is not valid JSON or Python literal")
     return cleaned
