@@ -1,3 +1,4 @@
+from email.mime import text
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Form
@@ -41,7 +42,7 @@ print('-' * 80)
 
 #model = LoadOpenAIModel()
 @app.post('/api/config-model/')
-async def config_model(model_name = Form(), temp: float =Form(0.7)):
+async def config_model(model_name = Form(), temp: float =Form(1)):
     global model 
     try:
         if 'gemini' in model_name.lower():
@@ -70,7 +71,32 @@ async def config_model(model_name = Form(), temp: float =Form(0.7)):
             }
         )
         return message
-    
+
+@app.get('/api/model-name/')
+async def get_model_name():
+    global model 
+    try:
+        text = model.model if hasattr(model, 'model') else model.model_name
+        message = JSONResponse(
+            status_code=200,
+            content={
+                'status': True,
+                'status_code': 200,
+                'text': text
+            }
+        )
+        return message
+    except Exception as ex:
+        message = JSONResponse(
+            status_code=500,
+            content={
+                'status': False,
+                'status_code': 500,
+                'text': str(ex)
+            }
+        )
+        return message
+ 
 
 @app.post('/api/gen-question/')
 async def generate_question(ex_name= Form(), 
