@@ -28,7 +28,8 @@ app.add_middleware(
 
 load_dotenv()
 
-model = LoadGenModel()
+# model = LoadGenModel()
+model = LoadOpenAIModel()
 print('=' * 80)
 print("Initial Model Name:", model.model)
 print('=' * 80)

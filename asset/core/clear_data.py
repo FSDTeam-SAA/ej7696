@@ -19,7 +19,7 @@ def CleanData(text):
     print(cleaned)
     print('x' * 100)"""
     #cleaned = ast.literal_eval(cleaned)
-    print(cleaned)
+    # print(cleaned)
     #cleaned = json.loads(cleaned)
     try:
         return json.loads(cleaned)
