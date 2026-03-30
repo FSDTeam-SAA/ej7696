@@ -30,9 +30,9 @@ load_dotenv()
 
 # model = LoadGenModel()
 model = LoadOpenAIModel()
-print('=' * 80)
-print("Initial Model Name:", model.model_name)
-print('=' * 80)
+# print('=' * 80)
+# print("Initial Model Name:", model.model_name)
+# print('=' * 80)
 
 # print('-' * 80)
 # print(' ' * 25, "API keys loading")
