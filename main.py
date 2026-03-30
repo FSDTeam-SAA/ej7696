@@ -33,63 +33,7 @@ model = LoadOpenAIModel()
 
 
 
-#model = LoadOpenAIModel()
-@app.post('/api/config-model/')
-async def config_model(model_name = Form(), temp: float =Form(1)):
-    global model 
-    try:
-        if 'gemini' in model_name.lower():
-            model = LoadGenModel(model_name=model_name, temp=temp)
-            text = f'Model configured to {model.model} with temperature {model.temperature}'
-        elif 'gpt' in model_name.lower() or 'openai' in model_name.lower():
-            model = LoadOpenAIModel(model_name=model_name, temp=temp)
-            text = f'Model configured to {model.model_name} with temperature {model.temperature}'
-        
-        message = JSONResponse(
-            status_code=200,
-            content={
-                'status': True,
-                'status_code': 200,
-                'text': text
-            }
-        )
-        return message
-    except Exception as ex:
-        message = JSONResponse(
-            status_code=500,
-            content={
-                'status': False,
-                'status_code': 500,
-                'text': str(ex)
-            }
-        )
-        return message
 
-@app.get('/api/model-name/')
-async def get_model_name():
-    global model 
-    try:
-        text = model.model if hasattr(model, 'model') else model.model_name
-        message = JSONResponse(
-            status_code=200,
-            content={
-                'status': True,
-                'status_code': 200,
-                'text': text
-            }
-        )
-        return message
-    except Exception as ex:
-        message = JSONResponse(
-            status_code=500,
-            content={
-                'status': False,
-                'status_code': 500,
-                'text': str(ex)
-            }
-        )
-        return message
- 
 
 @app.post('/api/gen-question/')
 async def generate_question(ex_name= Form(), 
@@ -145,9 +89,7 @@ async def generate_question(ex_name= Form(),
             
             response = MergeData(previous=text, new=new_data)
 
-        print('=' * 80)
-        print("Current Model Name in API:", model.model)
-        print('=' * 80)
+
         """if model.model.startswith('gemini-3'):
             response = get_text(response)
         
