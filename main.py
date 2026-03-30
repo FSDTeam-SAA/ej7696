@@ -30,16 +30,8 @@ load_dotenv()
 
 # model = LoadGenModel()
 model = LoadOpenAIModel()
-# print('=' * 80)
-# print("Initial Model Name:", model.model_name)
-# print('=' * 80)
 
-# print('-' * 80)
-# print(' ' * 25, "API keys loading")
-# print('-' * 80)
-# print("Gemini Key Loaded:", os.environ.get('GOOGLE_API_KEY'))
-# print("OpenAI Key Loaded:", os.environ.get('OPENAI_API_KEY'))
-# print('-' * 80)
+
 
 #model = LoadOpenAIModel()
 @app.post('/api/config-model/')
