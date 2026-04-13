@@ -5,7 +5,7 @@ out_temp = [
             {"option": "string",
              "is_correct": bool}
         ], 
-        "explanation": "string (explanation for the correct answer and Section, API code number, Article number if have there. Do not give wrong book or referance. heardly give correct referance.)"
+        "explanation": "string (explanation for the correct answer and Section, API code number, Article number if have there. Do not give wrong book or referance. heardly give correct referance. Invalid/Forbidden referance word like ASME or other words,Body of Knowledge, Body of Knowledge, Sheet of content or other ingeneric word)"
     }
 ]
 

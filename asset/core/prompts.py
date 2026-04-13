@@ -218,6 +218,7 @@ def GenQuestionPrompt(ex_name, sheet_content, knowledge_content, n_question):#, 
             "Examples of valid format (structure only, not fixed values):\n"
                 "- API {number}, Section {number.number}\n"
                 "- API {number}, Chapter {number}, Section {number.number}\n"
+                "- ASME, API {number}, Chapter {number}, Section {number.number}\n"
                 "- API {number}, Section {number.number.number}\n\n"
 
                 "Instance ASME give API code"
