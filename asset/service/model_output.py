@@ -2,6 +2,7 @@ def ModelOutput(model, prompt):
     try:
         response = model.invoke(prompt).content
         status=True
+        # print(response)
     
     except Exception as ex:
         status = False

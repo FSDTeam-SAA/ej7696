@@ -41,7 +41,7 @@ async def generate_question(ex_name= Form(),
                             knowledge_content=Form(), 
                             n_question: int =Form()):
                             #exam_type: str = Form()):
-    try:
+    # try:
         #prompt = GenQuestionPrompt(ex_name=ex_name, sheet_content=sheet_content, knowledge_content=knowledge_content, n_question=n_question)
         
         #response = model.invoke(prompt).content
@@ -79,15 +79,21 @@ async def generate_question(ex_name= Form(),
         s_count = 0
         
         count, response = CheckQuestionCount(response=text, n_question=n_question)
-
+        print('x' * 100)
+        print("After Check Question : ",response)
+        print('x' * 100)
         if count != 0:
-            new_data = GetModelResponse(model=model, ex_name=ex_name,
+            print(len(response))
+            status, new_data = GetModelResponse(model=model, ex_name=ex_name,
                                         sheet_content=sheet_content,
                                         knowledge_content=knowledge_content,
                                         n_question=count)
                                         #exam_type=exam_type)
             
             response = MergeData(previous=text, new=new_data)
+            print('x' * 100)
+            print("After Merge Question : ",response)
+            print('x' * 100)
 
 
         """if model.model.startswith('gemini-3'):
@@ -97,7 +103,9 @@ async def generate_question(ex_name= Form(),
         """
         #print(response)
 
-
+        print('x' * 100)
+        print(response)
+        print('x' * 100)
         print('x' * 100)
         print("Number of question generated:", len(response))
         print('x' * 100)
@@ -113,15 +121,15 @@ async def generate_question(ex_name= Form(),
         )
         return message
     
-    except Exception as ex:
-        message = JSONResponse(
-            status_code=500,
-            content={
-                'status': False,
-                'status_code': 500,
-                'text': str(ex) 
-            }
-        )
+    # except Exception as ex:
+    #     message = JSONResponse(
+    #         status_code=500,
+    #         content={
+    #             'status': False,
+    #             'status_code': 500,
+    #             'text': str(ex) 
+    #         }
+    #     )
 
         return message
 
