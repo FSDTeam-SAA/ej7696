@@ -220,8 +220,8 @@ def GenQuestionPrompt(ex_name, sheet_content, knowledge_content, n_question):#, 
                 "- API {number}, Chapter {number}, Section {number.number}\n"
                 "- API {number}, Section {number.number.number}\n\n"
 
-            "Instance ASME give API code"
-            "   Invalid referance word like ASME or other words, Body of Knowledge, Sheet of content or other ingeneric word"
+                "Instance ASME give API code"
+                "Invalid/Forbidden referance word like ASME or other words,Body of Knowledge, Body of Knowledge, Sheet of content or other ingeneric word"
 
             "DO NOT hardcode or reuse fixed API numbers like 'API 650' unless it explicitly exists in the provided content.\n"
             "Always extract and use the correct API code and numbers from the given material.\n\n"
