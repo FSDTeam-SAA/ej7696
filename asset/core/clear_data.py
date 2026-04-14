@@ -12,12 +12,20 @@ def CleanData(text):
     # Step 3: Remove code language keywords (json, bash, python, etc.)
     cleaned = re.sub(r'\b(json|bash|python|Body of Knowledge)\b', '', cleaned, flags=re.IGNORECASE)
 
+    # cleaned = re.sub(
+    #     r'\b(ASME|Body of Knowledge|Knowledge Base|Sheet Content|Book)\b,?\s*',
+    #     '',
+    #     cleaned,
+    #     flags=re.IGNORECASE
+    # )
     cleaned = re.sub(
-        r'\b(ASME|Body of Knowledge|Knowledge Base|Sheet Content|Book)\b,?\s*',
+        r'Body of Knowledge\s*\d{4}|Body of Knowledge|Knowledge Base|Sheet Content',
         '',
         cleaned,
         flags=re.IGNORECASE
     )
+
+    cleaned = re.sub(r'\s{2,}', ' ', cleaned)
     # Step 4: Remove newlines and extra spaces
     cleaned = re.sub(r'\s+', ' ', cleaned).strip()
 
