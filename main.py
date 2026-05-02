@@ -38,8 +38,7 @@ model = LoadOpenAIModel()
 @app.post('/api/gen-question/')
 async def generate_question(ex_name= Form(), 
                             sheet_content=Form(), 
-                            knowledge_content=Form(),
-                            question_type=Form(), 
+                            knowledge_content=Form(), 
                             n_question: int =Form()):
                             #exam_type: str = Form()):
     # try:
@@ -49,21 +48,9 @@ async def generate_question(ex_name= Form(),
         #print(response)
         #if type(response) != list:
             #response = CleanData(response)
-        accepted_type = ["single_select", "multi_select"]
-        if question_type not in accepted_type:
-            message = JSONResponse(
-                status_code=400,
-                content={
-                    'status': False,
-                    'status_code': 400,
-                    'text': f"Invalid question type. Accepted types are: {', '.join(accepted_type)}"
-                }
-            )
-            return message
         status, text = GetModelResponse(model=model, ex_name=ex_name,
                                     sheet_content=sheet_content,
                                    knowledge_content=knowledge_content,
-                                   question_type=question_type,
                                    n_question=n_question)
                                    #exam_type=exam_type)
         
@@ -85,7 +72,6 @@ async def generate_question(ex_name= Form(),
             status, text = GetModelResponse(model=model, ex_name=ex_name,
                                         sheet_content=sheet_content,
                                        knowledge_content=knowledge_content,
-                                       question_type=question_type,
                                        n_question=n_question)
                                        #exam_type=exam_type)
             s_count += 1
@@ -101,7 +87,6 @@ async def generate_question(ex_name= Form(),
             status, new_data = GetModelResponse(model=model, ex_name=ex_name,
                                         sheet_content=sheet_content,
                                         knowledge_content=knowledge_content,
-                                        question_type=question_type,
                                         n_question=count)
                                         #exam_type=exam_type)
             
