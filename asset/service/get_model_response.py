@@ -23,11 +23,13 @@ def GetModelResponse(model, ex_name, sheet_content,
 
 
 def GetModelResponse(model, ex_name, sheet_content, 
-                     knowledge_content, n_question):
+                     knowledge_content, 
+                     question_type,n_question):
                      #, exam_type):
 
     prompt = GenQuestionPrompt(ex_name=ex_name, sheet_content=sheet_content, 
                                knowledge_content=knowledge_content, 
+                               question_type=question_type,
                                n_question=n_question)#, exam_type=exam_type)
     
     #response = model.invoke(prompt).content

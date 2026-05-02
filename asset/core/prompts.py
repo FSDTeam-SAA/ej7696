@@ -195,7 +195,7 @@ from langchain.messages import SystemMessage, HumanMessage, AIMessage
 
 
 
-def GenQuestionPrompt(ex_name, sheet_content, knowledge_content, n_question):#, exam_type):
+def GenQuestionPrompt(ex_name, sheet_content, knowledge_content,question_type, n_question):#, exam_type):
 
     sys_message = SystemMessage(
     content=(
@@ -233,7 +233,7 @@ def GenQuestionPrompt(ex_name, sheet_content, knowledge_content, n_question):#, 
 
             "The reference used in the explanation must match the provided source exactly. Do not infer, invent, or introduce references from outside the provided material.\n\n"
 
-            f"Exam difficulty mix should be as follows: {DIFFICULTY_MIX_CONFIG}.\n\n"
+            f"Exam difficulty mix should be as follows: {DIFFICULTY_MIX_CONFIG.get(question_type, DIFFICULTY_MIX_CONFIG['single_select'])}.\n\n"
             f"Follow this exact dictionary output format: {out_temp}\n"
             "Do not add any extra text outside the required output list of dictionaries.\n"
             f"Do not hallucinate or include any information outside the provided content. Return exactly {n_question} questions.\n"
