@@ -149,32 +149,32 @@ async def generate_multiple_answer_question(ex_name=Form(),
     )
 
 
-@app.post('/api/gen-question/')
-async def generate_question(ex_name=Form(),
-                            sheet_content=Form(),
-                            knowledge_content=Form(),
-                            n_question: int = Form()):
-    return _generate_questions(
-        question_type='single_choice',
-        ex_name=ex_name,
-        sheet_content=sheet_content,
-        knowledge_content=knowledge_content,
-        n_question=n_question,
-    )
+# @app.post('/api/gen-question/')
+# async def generate_question(ex_name=Form(),
+#                             sheet_content=Form(),
+#                             knowledge_content=Form(),
+#                             n_question: int = Form()):
+#     return _generate_questions(
+#         question_type='single_choice',
+#         ex_name=ex_name,
+#         sheet_content=sheet_content,
+#         knowledge_content=knowledge_content,
+#         n_question=n_question,
+#     )
 
 
-@app.post('/api/gen-multiple-choice-question/')
-async def generate_multiple_choice_question(ex_name=Form(),
-                                            sheet_content=Form(),
-                                            knowledge_content=Form(),
-                                            n_question: int = Form()):
-    return _generate_questions(
-        question_type='single_choice',
-        ex_name=ex_name,
-        sheet_content=sheet_content,
-        knowledge_content=knowledge_content,
-        n_question=n_question,
-    )
+# @app.post('/api/gen-multiple-choice-question/')
+# async def generate_multiple_choice_question(ex_name=Form(),
+#                                             sheet_content=Form(),
+#                                             knowledge_content=Form(),
+#                                             n_question: int = Form()):
+#     return _generate_questions(
+#         question_type='single_choice',
+#         ex_name=ex_name,
+#         sheet_content=sheet_content,
+#         knowledge_content=knowledge_content,
+#         n_question=n_question,
+#     )
 
 """
 out_dir = hyper['output_dir']
