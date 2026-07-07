@@ -83,9 +83,69 @@ def GenQuestionPrompt(ex_name, sheet_content, knowledge_content, n_question):#, 
 
 # asset/core/prompts.py
 
-from langchain_core.messages import SystemMessage, HumanMessage
-from asset.core.output_format import out_temp, DIFFICULTY_MIX_CONFIG, QUESTION_TYPE_CONFIG
+from asset.core.output_format import DIFFICULTY_MIX_CONFIG
 
+
+SINGLE_CHOICE_OUTPUT_TEMPLATE = """
+[
+    {
+        "question": "string — plain language question only",
+        "options": [
+            {"serial_no": "A", "option": "string", "is_correct": false},
+            {"serial_no": "B", "option": "string", "is_correct": false},
+            {"serial_no": "C", "option": "string", "is_correct": true},
+            {"serial_no": "D", "option": "string", "is_correct": false}
+        ],
+        "type": "single_choice",
+        "explanation": "string — explain why the correct option is right and include the exact API reference in parentheses"
+    }
+]
+"""
+
+TRUE_FALSE_OUTPUT_TEMPLATE = """
+[
+    {
+        "question": "string — plain language question only",
+        "options": [
+            {"serial_no": "True", "option": "True", "is_correct": false},
+            {"serial_no": "False", "option": "False", "is_correct": true}
+        ],
+        "type": "true_false",
+        "explanation": "string — explain why the correct option is right and include the exact API reference in parentheses"
+    }
+]
+"""
+
+MULTIPLE_ANSWER_OUTPUT_TEMPLATE = """
+[
+    {
+        "question": "string — plain language question only",
+        "options": [
+            {"serial_no": "A", "option": "string", "is_correct": true},
+            {"serial_no": "B", "option": "string", "is_correct": false},
+            {"serial_no": "C", "option": "string", "is_correct": true},
+            {"serial_no": "D", "option": "string", "is_correct": false}
+        ],
+        "type": "multiple_answer",
+        "explanation": "string — explain why the correct options are right and include the exact API reference in parentheses"
+    }
+]
+"""
+
+QUESTION_TYPE_RULES = {
+    "single_choice": {
+        "description": "Single-choice questions must have exactly 4 options (A, B, C, D) and exactly one correct answer.",
+        "output_template": SINGLE_CHOICE_OUTPUT_TEMPLATE,
+    },
+    "true_false": {
+        "description": "True/false questions must have exactly 2 options labelled True and False, with one correct answer.",
+        "output_template": TRUE_FALSE_OUTPUT_TEMPLATE,
+    },
+    "multiple_answer": {
+        "description": "Multiple-answer questions must have 4 options (A, B, C, D) and at least two correct answers, possibly three or all four.",
+        "output_template": MULTIPLE_ANSWER_OUTPUT_TEMPLATE,
+    },
+}
 
 SYSTEM_TEMPLATE = """
     You are a professional exam question writer for American Petroleum Institute (API) certification exams.
@@ -98,24 +158,24 @@ SYSTEM_TEMPLATE = """
     Do NOT hallucinate, infer, or introduce any information not present in the provided material.
 
     ═══════════════════════════════════════════
+    QUESTION TYPE
+    ═══════════════════════════════════════════
+    {question_type_description}
+
+    ═══════════════════════════════════════════
     QUESTION WRITING RULES
     ═══════════════════════════════════════════
     1. Never mention API codes, section numbers, chapter names, article numbers, book titles,
     or any source-identifying label inside the question text.
-    2. Every question must have exactly 4 options (A, B, C, D).
+    2. Each question must be clear, concise, and based only on the provided content.
     3. Options must be unique, plausible, and clearly distinct from each other.
-    4. The correct answer must be shuffled randomly across A/B/C/D — never default to A or D.
-    5. Option labels (A, B, C, D) must be shuffled in order as well.
+    4. The correct answer position must be shuffled appropriately for the question type.
+    5. Do not include any extra text outside the required Python list.
 
     ═══════════════════════════════════════════
     DIFFICULTY DISTRIBUTION
     ═══════════════════════════════════════════
     {difficulty_config}
-
-    ═══════════════════════════════════════════
-    QUESTION TYPE DISTRIBUTION
-    ═══════════════════════════════════════════
-    {type_config}
 
     ═══════════════════════════════════════════
     REFERENCE FORMAT (MANDATORY)
@@ -158,13 +218,18 @@ USER_TEMPLATE = """
 """
 
 
-def GenQuestionPrompt(ex_name: str, sheet_content: str, knowledge_content: str, n_question: int) -> str:
+def GenQuestionPrompt(ex_name: str, sheet_content: str, knowledge_content: str, n_question: int, question_type: str = "single_choice") -> str:
+    question_type = question_type.lower()
+    if question_type not in QUESTION_TYPE_RULES:
+        question_type = "single_choice"
+
+    type_rule = QUESTION_TYPE_RULES[question_type]
     system_prompt = SYSTEM_TEMPLATE.format(
         ex_name=ex_name,
         n_question=n_question,
+        question_type_description=type_rule["description"],
         difficulty_config=DIFFICULTY_MIX_CONFIG,
-        type_config=QUESTION_TYPE_CONFIG,
-        output_template=out_temp,
+        output_template=type_rule["output_template"],
     )
 
     user_prompt = USER_TEMPLATE.format(

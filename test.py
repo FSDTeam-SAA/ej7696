@@ -1,24 +1,24 @@
-import os
-import json
-from pymongo import MongoClient
-from dotenv import load_dotenv
+# import os
+# import json
+# from pymongo import MongoClient
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
-uri = os.environ.get("MONGO_URI")
+# uri = os.environ.get("MONGO_URI")
 
-collection = MongoClient(uri)['test']['examquestionbanks']
+# collection = MongoClient(uri)['test']['examquestionbanks']
 
-data = collection.find({}, {'question.explanation'}).to_list()
+# data = collection.find({}, {'question.explanation'}).to_list()
 
-print('-'*60)
-print(f"Total find : {len(data)} question")
-print('-'*60)
+# print('-'*60)
+# print(f"Total find : {len(data)} question")
+# print('-'*60)
 
 
 
-with open("explanation_data.json", 'w', encoding="utf-8") as f:
-    json.dump(data, f, indent=4, default=str)
+# with open("explanation_data.json", 'w', encoding="utf-8") as f:
+#     json.dump(data, f, indent=4, default=str)
 
 # import ast
 # import json
@@ -38,3 +38,12 @@ with open("explanation_data.json", 'w', encoding="utf-8") as f:
 # with open("explanation_data_1.json", 'w', encoding="utf-8") as f:
 #     json.dump(clean_data, f, indent=4, ensure_ascii=False)
 
+
+from dotenv import load_dotenv
+from asset.config.openai_model import LoadOpenAIModel
+
+load_dotenv()
+
+llm = LoadOpenAIModel(model_name='gpt-4.1-2025-04-14', temp=0.7)
+
+print(llm.invoke("Hello, how are you?"))

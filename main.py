@@ -35,103 +35,146 @@ model = LoadOpenAIModel()
 
 
 
-@app.post('/api/gen-question/')
-async def generate_question(ex_name= Form(), 
-                            sheet_content=Form(), 
-                            knowledge_content=Form(), 
-                            n_question: int =Form()):
-                            #exam_type: str = Form()):
-    # try:
-        #prompt = GenQuestionPrompt(ex_name=ex_name, sheet_content=sheet_content, knowledge_content=knowledge_content, n_question=n_question)
-        
-        #response = model.invoke(prompt).content
-        #print(response)
-        #if type(response) != list:
-            #response = CleanData(response)
-        status, text = GetModelResponse(model=model, ex_name=ex_name,
-                                    sheet_content=sheet_content,
-                                   knowledge_content=knowledge_content,
-                                   n_question=n_question)
-                                   #exam_type=exam_type)
-        
+def _generate_questions(question_type: str, ex_name, sheet_content, knowledge_content, n_question):
+    try:
+        status, text = GetModelResponse(
+            model=model,
+            ex_name=ex_name,
+            sheet_content=sheet_content,
+            knowledge_content=knowledge_content,
+            n_question=n_question,
+            question_type=question_type,
+        )
+
         if not status:
-            message = JSONResponse(
+            return JSONResponse(
                 status_code=500,
                 content={
                     'status': False,
                     'status_code': 500,
-                    'text': text 
-                }
+                    'text': text,
+                },
             )
-            return message
-        
 
         s_count = 0
         while not status and s_count < 3:
             print(f"Retrying... Attempt {s_count + 1}")
-            status, text = GetModelResponse(model=model, ex_name=ex_name,
-                                        sheet_content=sheet_content,
-                                       knowledge_content=knowledge_content,
-                                       n_question=n_question)
-                                       #exam_type=exam_type)
+            status, text = GetModelResponse(
+                model=model,
+                ex_name=ex_name,
+                sheet_content=sheet_content,
+                knowledge_content=knowledge_content,
+                n_question=n_question,
+                question_type=question_type,
+            )
             s_count += 1
-        
-        s_count = 0
-        
+
         count, response = CheckQuestionCount(response=text, n_question=n_question)
-        print('x' * 100)
-        print("After Check Question : ",response)
-        print('x' * 100)
         if count != 0:
-            print(len(response))
-            status, new_data = GetModelResponse(model=model, ex_name=ex_name,
-                                        sheet_content=sheet_content,
-                                        knowledge_content=knowledge_content,
-                                        n_question=count)
-                                        #exam_type=exam_type)
-            
+            status, new_data = GetModelResponse(
+                model=model,
+                ex_name=ex_name,
+                sheet_content=sheet_content,
+                knowledge_content=knowledge_content,
+                n_question=count,
+                question_type=question_type,
+            )
             response = MergeData(previous=text, new=new_data)
-            print('x' * 100)
-            print("After Merge Question : ",response)
-            print('x' * 100)
-
-
-        """if model.model.startswith('gemini-3'):
-            response = get_text(response)
-        
-        response = CleanData(response)
-        """
-        #print(response)
 
         print('x' * 100)
         print(response)
         print('x' * 100)
-        print('x' * 100)
         print("Number of question generated:", len(response))
         print('x' * 100)
 
-        
-        message = JSONResponse(
+        return JSONResponse(
             status_code=200,
             content={
                 'status': True,
                 'status_code': 200,
-                'text': response 
-            }
+                'text': response,
+            },
         )
-        return message
-    
-    # except Exception as ex:
-    #     message = JSONResponse(
-    #         status_code=500,
-    #         content={
-    #             'status': False,
-    #             'status_code': 500,
-    #             'text': str(ex) 
-    #         }
-    #     )
 
-        return message
+    except Exception as ex:
+        return JSONResponse(
+            status_code=500,
+            content={
+                'status': False,
+                'status_code': 500,
+                'text': str(ex),
+            },
+        )
+
+
+@app.post('/api/gen-single-choice-question/')
+async def generate_single_choice_question(ex_name=Form(),
+                                         sheet_content=Form(),
+                                         knowledge_content=Form(),
+                                         n_question: int = Form()):
+    return _generate_questions(
+        question_type='single_choice',
+        ex_name=ex_name,
+        sheet_content=sheet_content,
+        knowledge_content=knowledge_content,
+        n_question=n_question,
+    )
+
+
+@app.post('/api/gen-true-false-question/')
+async def generate_true_false_question(ex_name=Form(),
+                                       sheet_content=Form(),
+                                       knowledge_content=Form(),
+                                       n_question: int = Form()):
+    return _generate_questions(
+        question_type='true_false',
+        ex_name=ex_name,
+        sheet_content=sheet_content,
+        knowledge_content=knowledge_content,
+        n_question=n_question,
+    )
+
+
+@app.post('/api/gen-multiple-answer-question/')
+async def generate_multiple_answer_question(ex_name=Form(),
+                                            sheet_content=Form(),
+                                            knowledge_content=Form(),
+                                            n_question: int = Form()):
+    return _generate_questions(
+        question_type='multiple_answer',
+        ex_name=ex_name,
+        sheet_content=sheet_content,
+        knowledge_content=knowledge_content,
+        n_question=n_question,
+    )
+
+
+@app.post('/api/gen-question/')
+async def generate_question(ex_name=Form(),
+                            sheet_content=Form(),
+                            knowledge_content=Form(),
+                            n_question: int = Form()):
+    return _generate_questions(
+        question_type='single_choice',
+        ex_name=ex_name,
+        sheet_content=sheet_content,
+        knowledge_content=knowledge_content,
+        n_question=n_question,
+    )
+
+
+@app.post('/api/gen-multiple-choice-question/')
+async def generate_multiple_choice_question(ex_name=Form(),
+                                            sheet_content=Form(),
+                                            knowledge_content=Form(),
+                                            n_question: int = Form()):
+    return _generate_questions(
+        question_type='single_choice',
+        ex_name=ex_name,
+        sheet_content=sheet_content,
+        knowledge_content=knowledge_content,
+        n_question=n_question,
+    )
 
 """
 out_dir = hyper['output_dir']
