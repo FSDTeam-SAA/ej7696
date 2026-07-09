@@ -121,10 +121,10 @@ MULTIPLE_ANSWER_OUTPUT_TEMPLATE = """
     {
         "question": "string — plain language question only",
         "options": [
-            {"serial_no": "A", "option": "string", "is_correct": true},
-            {"serial_no": "B", "option": "string", "is_correct": false},
-            {"serial_no": "C", "option": "string", "is_correct": true},
-            {"serial_no": "D", "option": "string", "is_correct": false}
+            {"serial_no": "A", "option": "string", "is_correct": true_or_false},
+            {"serial_no": "B", "option": "string", "is_correct": true_or_false},
+            {"serial_no": "C", "option": "string", "is_correct": true_or_false},
+            {"serial_no": "D", "option": "string", "is_correct": true_or_false}
         ],
         "type": "multiple_answer",
         "explanation": "string — explain why the correct options are right and include the exact API reference in parentheses"
@@ -142,7 +142,23 @@ QUESTION_TYPE_RULES = {
         "output_template": TRUE_FALSE_OUTPUT_TEMPLATE,
     },
     "multiple_answer": {
-        "description": "Multiple-answer questions must have 4 options (A, B, C, D) and at least two correct answers, possibly three or all four.",
+        "description": (
+            "Multiple-answer questions must always have exactly 4 options (A, B, C, D). "
+            "Each option is an individual answer choice, and 2, 3, or 4 of those options can be correct. "
+            "Do not create a single combination option like 'A and B', 'All of the above', or 'Both A and C'. "
+            "Mark every correct individual option with is_correct=true and every wrong option with is_correct=false.\n\n"
+            "Correct-answer count variation is mandatory:\n"
+            "- Some multiple-answer questions must have exactly 2 correct options.\n"
+            "- Some multiple-answer questions must have exactly 3 correct options.\n"
+            "- Some multiple-answer questions may have exactly 4 correct options when the source supports it.\n"
+            "- Do NOT default to exactly 3 correct options for every question.\n"
+            "- When generating multiple questions, rotate the target correct count in this order: 2, 3, 4, 2, 3, 4.\n"
+            "- If generating only one question, choose the correct count from the source content, but prefer 2 or 4 if 3 was used recently.\n\n"
+            "Valid patterns include:\n"
+            "- 2 correct: A=true, B=false, C=true, D=false\n"
+            "- 3 correct: A=true, B=true, C=false, D=true\n"
+            "- 4 correct: A=true, B=true, C=true, D=true\n"
+        ),
         "output_template": MULTIPLE_ANSWER_OUTPUT_TEMPLATE,
     },
 }
@@ -205,6 +221,7 @@ SYSTEM_TEMPLATE = """
     - Do NOT include any text, comments, or explanation outside the list.
     - Do NOT wrap the output in markdown code fences.
     - Every string value must be properly escaped.
+    - In output templates, true_or_false is a placeholder only; actual output must use real booleans: true or false.
 """
 
 USER_TEMPLATE = """
